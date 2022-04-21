@@ -96,7 +96,13 @@ export class FxModel extends HTMLElement {
    */
   modelConstruct() {
     // console.log('### <<<<< dispatching model-construct >>>>>');
-    this.dispatchEvent(new CustomEvent('model-construct', { detail: this }));
+    // this.dispatchEvent(new CustomEvent('model-construct', { detail: this }));
+    this.dispatchEvent(new CustomEvent('model-construct', {
+      composed: false,
+      bubbles: true,
+      detail: { model: this },
+    }),
+  );
 
     console.time('instance-loading');
     const instances = this.querySelectorAll('fx-instance');
@@ -116,7 +122,7 @@ export class FxModel extends HTMLElement {
         // console.log('### <<<<< dispatching model-construct-done >>>>>');
         this.dispatchEvent(
           new CustomEvent('model-construct-done', {
-            composed: true,
+            composed: false,
             bubbles: true,
             detail: { model: this },
           }),
@@ -127,7 +133,7 @@ export class FxModel extends HTMLElement {
       // ### if there's no instance one will created
       this.dispatchEvent(
         new CustomEvent('model-construct-done', {
-          composed: true,
+          composed: false,
           bubbles: true,
           detail: { model: this },
         }),

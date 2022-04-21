@@ -26,6 +26,8 @@
     <fx-fore>
         <fx-message event="ready">subcomponent ready</fx-message>
         <fx-model>
+            <fx-message event="model-construct-done">subcomponent model ready</fx-message>
+
             <fx-instance>
                 <data>
                     <email>default</email>
@@ -39,6 +41,7 @@
             <button>message me</button>
             <fx-message>Hey from subcomponent</fx-message>
         </fx-trigger>
+        <fx-inspector></fx-inspector>
     </fx-fore>
 
 

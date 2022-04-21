@@ -60,9 +60,12 @@
         <fx-message event="ready">outer fore ready</fx-message>
 
         <fx-model>
+            <fx-message event="model-construct-done">Outer model ready</fx-message>
             <fx-instance>
                 <data>
-                    <from>John.Doe@nowhere.com</from>
+                    <from>
+                        <email>John.Doe@nowhere.com</email>
+                    </from>
                     <to></to>
                     <subject></subject>
                     <message></message>
@@ -73,7 +76,12 @@
         </fx-model>
 
         <fx-group>
-            <fx-control ref="from"
+<!--
+            <fx-control ref="from/email">
+                <label>from inline</label>
+            </fx-control>
+-->
+            <fx-control ref="from/email"
                         url="email.html"
                         initial=".">
                 <label>From</label>
@@ -84,14 +92,16 @@
                         initial="to">
                 <label>To</label>
             </fx-control>
-            <fx-control ref="subject">
-                <label>Subject</label>
-            </fx-control>
-            <fx-control ref="message">
-                <label>Message</label>
-                <textarea class="widget" rows="10"></textarea>
-            </fx-control>
 -->
+            <!--
+                        <fx-control ref="subject">
+                            <label>Subject</label>
+                        </fx-control>
+                        <fx-control ref="message">
+                            <label>Message</label>
+                            <textarea class="widget" rows="10"></textarea>
+                        </fx-control>
+            -->
         </fx-group>
         <fx-inspector></fx-inspector>
     </fx-fore>

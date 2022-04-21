@@ -131,7 +131,7 @@ export class Fore {
             resolve('done');
           }
           if (Fore.isUiElement(element.nodeName) && typeof element.refresh === 'function') {
-            // console.log('refreshing ',element);
+            console.log('refreshing ',element);
             element.refresh();
           } else if (element.nodeName.toUpperCase() !== 'FX-MODEL') {
             Fore.refreshChildren(element, force);

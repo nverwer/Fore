@@ -238,8 +238,13 @@ export default class FxControl extends XfAbstractControl {
             console.log('subcomponent ready',e.target);
             const defaultInst = theFore.querySelector('fx-instance');
             console.log('defaultInst',defaultInst);
-            defaultInst.setInstanceData(this.initialNode);
+            const doc = new DOMParser().parseFromString('<data></data>', 'application/xml');
+            doc.firstElementChild.appendChild(this.initialNode);
+            // defaultInst.setInstanceData(this.initialNode);
+            defaultInst.setInstanceData(doc.firstElementChild);
             console.log('new data',defaultInst.getInstanceData());
+            theFore.getModel().updateModel();
+            theFore.refresh();
           },{once:true});
 
           if(!theFore){

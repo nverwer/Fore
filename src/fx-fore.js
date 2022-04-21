@@ -179,24 +179,23 @@ export class FxFore extends HTMLElement {
   }
 
   connectedCallback() {
-/*
-    document.addEventListener('ready', (e) =>{
-      if(e.target !== this){
-        // e.preventDefault();
-        console.log('>>> e', e);
-        console.log('event this', this);
-        // console.log('event eventPhase', e.eventPhase);
-        // console.log('event cancelable', e.cancelable);
-        console.log('event target', e.target);
-        console.log('event composed', e.composedPath());
-        console.log('<<< event stopping');
-        e.stopPropagation();
-      }else{
-        console.log('event proceed', this);
-      }
-      // e.stopImmediatePropagation();
-    },true);
-*/
+    // this.addEventListener('ready', (e) =>{
+    //   if(e.target !== this){
+    //     // e.preventDefault();
+    //     console.log('>>> e', e);
+    //     console.log('event this', this);
+    //     // console.log('event eventPhase', e.eventPhase);
+    //     // console.log('event cancelable', e.cancelable);
+    //     console.log('event target', e.target);
+    //     console.log('event composed', e.composedPath());
+    //     console.log('<<< event stopping');
+    //     e.stopImmediatePropagation();
+    //   }
+    //   // else{
+    //   //   console.log('event proceed', this);
+    //   // }
+    //   // e.stopPropagation();
+    // },true);
 
 
     this.lazyRefresh = this.hasAttribute('refresh-on-view');
@@ -675,7 +674,7 @@ export class FxFore extends HTMLElement {
    */
   async _initUI() {
     console.log('### _initUI()');
-
+    if(!this.initialRun) return;
     await this._lazyCreateInstance();
 
     // console.log('registering variables!');
@@ -709,8 +708,8 @@ export class FxFore extends HTMLElement {
     // this.dispatchEvent(new CustomEvent('ready', {}));
 
     this.dispatchEvent(new CustomEvent('ready', {
-      composed: true,
-      bubbles: true,
+      composed: false,
+      bubbles: false,
       cancelable:true,
       detail: {},
     }));
@@ -739,10 +738,12 @@ export class FxFore extends HTMLElement {
   }
 
   _displayMessage(e) {
-    // console.log('_displayMessage',e);
+    console.log('_displayMessage',e);
+    console.log('_displayMessage',e.detail.message);
     const { level } = e.detail;
     const msg = e.detail.message;
     this._showMessage(level, msg);
+    e.stopPropagation();
   }
 
   _displayError(e) {
