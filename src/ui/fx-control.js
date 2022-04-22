@@ -175,7 +175,7 @@ export default class FxControl extends XfAbstractControl {
       }
 
       // ### load the markup from Url
-      this._loadForeFromUrl();
+      await this._loadForeFromUrl();
       this.loaded=true;
 
 
@@ -233,7 +233,7 @@ export default class FxControl extends XfAbstractControl {
           theFore.classList.add('widget'); // is the new widget
           const dummy = this.querySelector('input');
           dummy.replaceWith(theFore);
-
+          console.log('########## loaded fore as component ##### ' + this.url);
           theFore.addEventListener('ready',(e)=>{
             console.log('subcomponent ready',e.target);
             const defaultInst = theFore.querySelector('fx-instance');
@@ -243,6 +243,7 @@ export default class FxControl extends XfAbstractControl {
             // defaultInst.setInstanceData(this.initialNode);
             defaultInst.setInstanceData(doc.firstElementChild);
             console.log('new data',defaultInst.getInstanceData());
+            // theFore.getModel().modelConstruct();
             theFore.getModel().updateModel();
             theFore.refresh();
           },{once:true});
@@ -250,7 +251,8 @@ export default class FxControl extends XfAbstractControl {
           if(!theFore){
             this.dispatchEvent(new CustomEvent('error',{detail:{message: `Fore element not found in '${this.src}'. Maybe wrapped within 'template' element?`}}));
           }
-          this.dispatchEvent(new CustomEvent('loaded',{}));
+          console.log('loaded');
+          this.dispatchEvent(new CustomEvent('loaded',{detail:{'fore':theFore}}));
         })
         .catch(error => {
           console.log('error',error);

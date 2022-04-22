@@ -152,17 +152,17 @@ export class FxModel extends HTMLElement {
    * update action triggering the update cycle
    */
   updateModel() {
-    console.time('updateModel');
+    // console.time('updateModel');
     this.rebuild();
     if(this.skipUpdate) return;
     this.recalculate();
     this.revalidate();
-    console.timeEnd('updateModel');
+    // console.timeEnd('updateModel');
   }
 
   rebuild() {
     console.group('### rebuild');
-    console.time('rebuild');
+    // console.time('rebuild');
     this.mainGraph = new DepGraph(false); //do: should be moved down below binds.length check but causes errors in tests.
     this.modelItems = [];
 
@@ -177,7 +177,7 @@ export class FxModel extends HTMLElement {
     binds.forEach(bind => {
       bind.init(this);
     });
-    console.timeEnd('rebuild');
+    // console.timeEnd('rebuild');
 
     // console.log(`dependencies of a `, this.mainGraph.dependenciesOf("/Q{}data[1]/Q{}a[1]:required"));
     // console.log(`dependencies of b `, this.mainGraph.dependenciesOf("/Q{}data[1]/Q{}b[1]:required"));

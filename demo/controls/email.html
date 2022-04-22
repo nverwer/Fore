@@ -28,20 +28,20 @@
         <fx-model>
             <fx-message event="model-construct-done">subcomponent model ready</fx-message>
 
-            <fx-instance>
+            <fx-instance id="email">
                 <data>
                     <email>default</email>
                 </data>
             </fx-instance>
         </fx-model>
-        <fx-control ref="email">
+        <fx-control ref="instance('email')/email">
 <!--            <label>From</label>-->
         </fx-control>
         <fx-trigger>
             <button>message me</button>
             <fx-message>Hey from subcomponent</fx-message>
         </fx-trigger>
-        <fx-inspector></fx-inspector>
+        <fx-inspector open></fx-inspector>
     </fx-fore>
 
 
