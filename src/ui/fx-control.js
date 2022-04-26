@@ -22,9 +22,9 @@ export default class FxControl extends XfAbstractControl {
   }
 
   connectedCallback() {
-    this.initial = this.hasAttribute('initial')?this.getAttribute('initial'):null;
-    this.url = this.hasAttribute('url') ? this.getAttribute('url'):null;
-    this.loaded=false;
+    this.initial = this.hasAttribute('initial') ? this.getAttribute('initial') : null;
+    this.url = this.hasAttribute('url') ? this.getAttribute('url') : null;
+    this.loaded = false;
     this.initialNode = null;
 
     this.updateEvent = this.hasAttribute('update-event')
@@ -64,7 +64,7 @@ export default class FxControl extends XfAbstractControl {
       this.setValue(this.widget[this.valueProp]);
     });
 
-/*
+    /*
     const slot = this.shadowRoot.querySelector('slot');
     slot.addEventListener('slotchange', event => {
       const children = event.target.assignedElements();
@@ -80,7 +80,7 @@ export default class FxControl extends XfAbstractControl {
       }
     });
 */
-      this.template = this.querySelector('template');
+    this.template = this.querySelector('template');
     // console.log('template',this.template);
   }
 
@@ -156,28 +156,27 @@ export default class FxControl extends XfAbstractControl {
     }
 
     // ### when there's an `as=text` attribute serialize nodeset to prettified string
-    if(this.hasAttribute('as')){
+    if (this.hasAttribute('as')) {
       const as = this.getAttribute('as');
-      if(as === 'text'){
+      if (as === 'text') {
         const serializer = new XMLSerializer();
-        const pretty = Fore.prettifyXml(serializer.serializeToString(this.nodeset))
+        const pretty = Fore.prettifyXml(serializer.serializeToString(this.nodeset));
         widget.value = pretty;
       }
       return;
     }
 
     // ### when there's a url Fore is used as widget and will be loaded from external file
-    if(this.url && !this.loaded){
+    if (this.url && !this.loaded) {
       // ### evaluate initial data if necessary
-      if(this.initial){
+      if (this.initial) {
         this.initialNode = evaluateXPath(this.initial, this.nodeset, this);
-        console.log('initialNodes',this.initialNode);
+        console.log('initialNodes', this.initialNode);
       }
 
       // ### load the markup from Url
       await this._loadForeFromUrl();
-      this.loaded=true;
-
+      this.loaded = true;
 
       // ### replace default instance of embedded Fore with initial nodes
       // const innerInstance = this.querySelector('fx-instance');
@@ -185,7 +184,7 @@ export default class FxControl extends XfAbstractControl {
       return;
     }
 
-/*
+    /*
     if(this.url && !this.loaded){
       this._loadForeFromUrl();
       this.loaded=true;
@@ -205,60 +204,72 @@ export default class FxControl extends XfAbstractControl {
    * todo: dispatch link error
    * @private
    */
-  _loadForeFromUrl() {
-    console.log('########## loading Fore from ',this.src ,'##########');
-    fetch(this.url, {
-      method: 'GET',
-      mode: 'cors',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'text/html',
-      },
-    })
-        .then(response => {
-          const responseContentType = response.headers.get('content-type').toLowerCase();
-          console.log('********** responseContentType *********', responseContentType);
-          if (responseContentType.startsWith('text/html')) {
-            return response.text().then(result =>
-                // console.log('xml ********', result);
-                new DOMParser().parseFromString(result, 'text/html'),
-            );
-          }
-          return 'done';
-        })
-        .then(data => {
-          // const theFore = fxEvaluateXPathToFirstNode('//fx-fore', data.firstElementChild);
-          const theFore = data.querySelector('fx-fore');
-          // console.log('thefore', theFore)
-          theFore.classList.add('widget'); // is the new widget
-          const dummy = this.querySelector('input');
-          dummy.replaceWith(theFore);
-          console.log('########## loaded fore as component ##### ' + this.url);
-          theFore.addEventListener('ready',(e)=>{
-            console.log('subcomponent ready',e.target);
-            const defaultInst = theFore.querySelector('fx-instance');
-            console.log('defaultInst',defaultInst);
-            const doc = new DOMParser().parseFromString('<data></data>', 'application/xml');
-            doc.firstElementChild.appendChild(this.initialNode);
-            // defaultInst.setInstanceData(this.initialNode);
-            defaultInst.setInstanceData(doc.firstElementChild);
-            console.log('new data',defaultInst.getInstanceData());
-            // theFore.getModel().modelConstruct();
-            theFore.getModel().updateModel();
-            theFore.refresh();
-          },{once:true});
+  async _loadForeFromUrl() {
+    console.log('########## loading Fore from ', this.src, '##########');
+    try {
+      const response = await fetch(this.url, {
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'text/html',
+        },
+      });
+      const responseContentType = response.headers.get('content-type').toLowerCase();
+      console.log('********** responseContentType *********', responseContentType);
+      let data;
+      if (responseContentType.startsWith('text/html')) {
+        data = await response.text().then(result =>
+          // console.log('xml ********', result);
+          new DOMParser().parseFromString(result, 'text/html'),
+        );
+      } else {
+        data = 'done';
+      }
+      // const theFore = fxEvaluateXPathToFirstNode('//fx-fore', data.firstElementChild);
+      const theFore = data.querySelector('fx-fore');
+      // console.log('thefore', theFore)
+      theFore.classList.add('widget'); // is the new widget
+      const dummy = this.querySelector('input');
+      dummy.replaceWith(theFore);
+      console.log(`########## loaded fore as component ##### ${this.url}`);
+      theFore.addEventListener(
+        'model-construct-done',
+        e => {
+          console.log('subcomponent ready', e.target);
+          const defaultInst = theFore.querySelector('fx-instance');
+          console.log('defaultInst', defaultInst);
+          const doc = new DOMParser().parseFromString('<data></data>', 'application/xml');
+          doc.firstElementChild.appendChild(this.initialNode);
+          // defaultInst.setInstanceData(this.initialNode);
+          defaultInst.setInstanceData(doc);
+          console.log('new data', defaultInst.getInstanceData());
+          // theFore.getModel().modelConstruct();
+          theFore.getModel().updateModel();
+          theFore.refresh();
+        },
+        { once: true },
+      );
 
-          if(!theFore){
-            this.dispatchEvent(new CustomEvent('error',{detail:{message: `Fore element not found in '${this.src}'. Maybe wrapped within 'template' element?`}}));
-          }
-          console.log('loaded');
-          this.dispatchEvent(new CustomEvent('loaded',{detail:{'fore':theFore}}));
-        })
-        .catch(error => {
-          console.log('error',error);
-          this.getOwnerForm().dispatchEvent(new CustomEvent('error',{detail:{message:`${this.url} not found`}}));
-        });
+      if (!theFore) {
+        this.dispatchEvent(
+          new CustomEvent('error', {
+            detail: {
+              message: `Fore element not found in '${this.src}'. Maybe wrapped within 'template' element?`,
+            },
+          }),
+        );
+      }
+      console.log('loaded');
+      this.dispatchEvent(new CustomEvent('loaded', { detail: { fore: theFore } }));
+    } catch (error) {
+      console.log('error', error);
+      this.getOwnerForm().dispatchEvent(
+        new CustomEvent('error', { detail: { message: `${this.url} not found` } }),
+      );
+    }
   }
+
   getTemplate() {
     return this.querySelector('template');
   }
@@ -299,7 +310,7 @@ export default class FxControl extends XfAbstractControl {
       const nodeset = evaluateXPath(ref, inscope, this);
 
       // ### bail out when nodeset is empty
-      if(Array.isArray(nodeset) && nodeset.length === 0) return;
+      if (Array.isArray(nodeset) && nodeset.length === 0) return;
 
       // ### clear items
       const { children } = widget;
