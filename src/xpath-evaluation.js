@@ -96,7 +96,7 @@ function createNamespaceResolver(xpathQuery, formElement) {
     let instance;
     if (instanceReferences[0] === 'default') {
       const actualForeElement = fxEvaluateXPathToFirstNode(
-        'ancestor-or-self::fx-fore',
+        'ancestor-or-self::fx-fore[1]',
         formElement,
         null,
         null,
@@ -212,7 +212,7 @@ function getVariablesInScope(formElement) {
   }
 
   const variables = {};
-  if(closestActualFormElement.inScopeVariables){
+  if (closestActualFormElement.inScopeVariables) {
     for (const key of closestActualFormElement.inScopeVariables.keys()) {
       const varElement = closestActualFormElement.inScopeVariables.get(key);
       variables[key] = varElement.value;
@@ -418,7 +418,7 @@ export function evaluateXPathToNumber(
  */
 export function resolveId(id, sourceObject, nodeName = null) {
   const allMatchingTargetObjects = fxEvaluateXPathToNodes(
-    'outermost(ancestor-or-self::fx-fore[1]/(descendant::xf-fore|descendant::*[@id = $id]))[not(self::fx-fore)]',
+    'outermost(ancestor-or-self::fx-fore[1]/(descendant::fx-fore|descendant::*[@id = $id]))[not(self::fx-fore)]',
     sourceObject,
     null,
     { id },
@@ -676,7 +676,7 @@ const instance = (dynamicContext, string) => {
   // TODO: handle no string passed (null will be passed instead)
 
   const formElement = fxEvaluateXPathToFirstNode(
-    'ancestor-or-self::fx-fore',
+    'ancestor-or-self::fx-fore[1]',
     dynamicContext.currentContext.formElement,
     null,
     null,
