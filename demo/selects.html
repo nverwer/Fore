@@ -99,6 +99,9 @@
                                     <option value="central america">Central America</option>
                                     <option value="south america">South America</option>
                                 </select>
+                                <!-- removing this refresh breaks the form - it does not detect that another control
+                                is depending on this control -->
+                                <fx-refresh event="value-changed"></fx-refresh>
                             </fx-control>
                             <br>
                             Selected Continent:

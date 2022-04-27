@@ -380,6 +380,7 @@ export class FxBind extends foreElementMixin(HTMLElement) {
     }
   }
 
+/*
   static lazyCreateModelitems(model, ref, nodeset) {
     if (Array.isArray(nodeset)) {
       Array.from(nodeset).forEach(n => {
@@ -389,6 +390,7 @@ export class FxBind extends foreElementMixin(HTMLElement) {
       FxBind.lazyCreateModelItem(model, ref, nodeset);
     }
   }
+*/
 
   /*
     static lazyCreateModelItem(model,ref,node){
@@ -517,6 +519,19 @@ export class FxBind extends foreElementMixin(HTMLElement) {
       const touchedNodes = new Set();
       const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
       this.nodeset.forEach(node => {
+        evaluateXPathToString(propertyExpr, node, this, domFacade);
+      });
+
+      return Array.from(touchedNodes.values());
+    }
+    return [];
+  }
+
+  static getReferencesForRef(ref,nodeset){
+    if (ref && nodeset) {
+      const touchedNodes = new Set();
+      const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
+      nodeset.forEach(node => {
         evaluateXPathToString(propertyExpr, node, this, domFacade);
       });
 

@@ -2,6 +2,7 @@ import '../fx-model.js';
 import { foreElementMixin } from '../ForeElementMixin.js';
 import { ModelItem } from '../modelitem.js';
 import { Fore } from '../fore.js';
+import { FxBind } from '../fx-bind.js';
 
 /**
  * `AbstractControl` -
@@ -43,7 +44,7 @@ export default class AbstractControl extends foreElementMixin(HTMLElement) {
       // this.control = this.querySelector('#control');
 
       if (this.nodeset === null) {
-        // this.style.display = 'none';
+        this.style.display = 'none';
         return;
       }
 
@@ -53,6 +54,22 @@ export default class AbstractControl extends foreElementMixin(HTMLElement) {
         // console.log('### XfAbstractControl.refresh modelItem : ', this.modelItem);
 
         this.value = this.modelItem.value;
+
+
+        /*
+        * todo: find out on which foreign modelitems we might be dependant on.
+        *
+        * e.g. filter expr on 'ref' 'instance('countries')//country[@continent = instance('default')/continent]'
+        *
+        * the country node is dependant on instance('default')/continent here (foreign node).
+        *
+        * possible approach:
+        * - pipe ref expression through DependencyNotifyingDomFacade to get referred nodes.
+        * - lookup modelItems of referred nodes
+        * - add ourselves to boundControls of foreign modelItem -> this control will then get refreshed when the foreign modelItem is changed.
+        */
+
+
 
         /*
         this is another case that highlights the fact that an init() function might make sense in general.
@@ -100,7 +117,7 @@ export default class AbstractControl extends foreElementMixin(HTMLElement) {
 
   _dispatchEvent(event) {
     if (this.getOwnerForm().ready) {
-      this.dispatch(event, {});
+      Fore.dispatch(this,event, {});
     }
   }
 

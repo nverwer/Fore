@@ -91,7 +91,7 @@ export class FxOutput extends XfAbstractControl {
       return evaluateXPathToStrings(this.valueAttr, inscopeContext, this)[0];
     } catch (error) {
       console.error(error);
-      this.dispatch('error', { message: error });
+      Fore.dispatch(this,'error', { message: error });
     }
     return null;
   }

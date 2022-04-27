@@ -24,15 +24,21 @@
             grid-template-columns: 1fr 2fr;
         }
 
+        input{
+            padding: 0.3rem;
+        }
+
         fx-group {
         }
 
         fx-fore fx-fore {
             background: lightsteelblue;
             border: thin solid steelblue;
+            height:200px;
         }
         fx-inspector{
             position: absolute;
+            height: 99%;
         }
     </style>
 </head>
@@ -40,24 +46,6 @@
 <div class="wrapper">
 
     <h1>Email message using Fore as control</h1>
-
-    <!--
-        <template id="email">
-            <fx-fore>
-                <fx-model>
-                    <fx-instance>
-                        <data>
-                            <email></email>
-                        </data>
-                    </fx-instance>
-                </fx-model>
-                <fx-control ref="email">
-                    <label>From</label>
-                    <fx-return event="value-changed"></fx-return>
-                </fx-control>
-            </fx-fore>
-        </template>
-    -->
 
     <fx-fore>
         <fx-message event="ready">outer fore ready</fx-message>
@@ -69,7 +57,9 @@
                     <from>
                         <email>John.Doe@nowhere.com</email>
                     </from>
-                    <to></to>
+                    <to>
+                        <email>Jane.Doe@nowhere.com</email>
+                    </to>
                     <subject></subject>
                     <message></message>
                 </data>
@@ -89,13 +79,11 @@
                         initial=".">
                 <label>From</label>
             </fx-control>
-<!--
-            <fx-control ref="to"
+            <fx-control ref="to/email"
                         url="email.html"
-                        initial="to">
+                        initial=".">
                 <label>To</label>
             </fx-control>
--->
             <!--
                         <fx-control ref="subject">
                             <label>Subject</label>

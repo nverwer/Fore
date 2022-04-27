@@ -216,6 +216,7 @@ export class FxFore extends HTMLElement {
 
     const slot = this.shadowRoot.querySelector('slot');
     slot.addEventListener('slotchange', event => {
+      // console.log('slotchange', event);
       const children = event.target.assignedElements();
       let modelElement = children.find(
         modelElem => modelElem.nodeName.toUpperCase() === 'FX-MODEL',
@@ -286,13 +287,13 @@ export class FxFore extends HTMLElement {
 
           // console.log('thefore', theFore)
           if(!theFore){
-            this.dispatchEvent(new CustomEvent('error',{detail:{message: `Fore element not found in '${this.src}'. Maybe wrapped within 'template' element?`}}));
+            Fore.dispatchEvent(this,'error',{detail:{message: `Fore element not found in '${this.src}'. Maybe wrapped within 'template' element?`}});
           }
           theFore.setAttribute('from-src', this.src);
           this.replaceWith(theFore);
         })
         .catch(error => {
-          this.dispatchEvent(new CustomEvent('error',{detail:{message: `'${this.src}' not found or does not contain Fore element.`}}));
+          Fore.dispatch(this,'error',{message: `'${this.src}' not found or does not contain Fore element.`});
         });
   }
 
@@ -705,15 +706,7 @@ export class FxFore extends HTMLElement {
     console.log('### >>>>> dispatching ready >>>>>', this);
     console.log('modelItems: ',this.getModel().modelItems);
     console.log('### <<<<< FORE: form fully initialized...', this);
-    // this.dispatchEvent(new CustomEvent('ready', {}));
-
-    this.dispatchEvent(new CustomEvent('ready', {
-      composed: false,
-      bubbles: false,
-      cancelable:true,
-      detail: {},
-    }));
-
+    Fore.dispatch(this,'ready',{});
   }
 
   registerLazyElement(element) {
