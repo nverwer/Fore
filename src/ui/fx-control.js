@@ -1,7 +1,8 @@
 import XfAbstractControl from './abstract-control.js';
-import { evaluateXPath, evaluateXPathToString, evaluateXPathToNodes } from '../xpath-evaluation.js';
+import { evaluateXPath, evaluateXPathToString, evaluateXPathToNodes} from '../xpath-evaluation.js';
 import getInScopeContext from '../getInScopeContext.js';
 import { Fore } from '../fore.js';
+// import {FxBind} from "../fx-bind";
 
 const WIDGETCLASS = 'widget';
 
@@ -64,6 +65,29 @@ export default class FxControl extends XfAbstractControl {
       this.setValue(this.widget[this.valueProp]);
     });
 
+    this.addEventListener('return', (e) =>{
+      console.log('catched return action on ', this);
+      console.log('return detail', e.detail);
+
+      if(!Event.BUBBLING_PHASE) return ;
+      console.log('return triggered on ', this);
+      console.log('this.ref', this.ref);
+      console.log('current outer instance', this.getInstance());
+
+      console.log('???? why ???? current nodeset should point to the node of the outer control', e.currentTarget.nodeset);
+      console.log('???? why ???? current nodeset should point to the node of the outer control', this.nodeset);
+      const newNodes = e.detail.nodeset;
+      console.log('new nodeset', newNodes);
+      console.log('currentTarget', e.currentTarget);
+      console.log('target', e.target);
+
+
+      e.stopPropagation();
+
+      // this._replaceNode(newNodes);
+    });
+
+
     /*
     const slot = this.shadowRoot.querySelector('slot');
     slot.addEventListener('slotchange', event => {
@@ -94,6 +118,11 @@ export default class FxControl extends XfAbstractControl {
     const setval = this.shadowRoot.getElementById('setvalue');
     setval.setValue(modelitem, val);
     setval.actionPerformed();
+  }
+
+  _replaceNode(node){
+    this.modelItem.node.replaceWith(node);
+    this.getOwnerForm().refresh();
   }
 
   renderHTML(ref) {
@@ -311,6 +340,10 @@ export default class FxControl extends XfAbstractControl {
 
       // ### bail out when nodeset is empty
       if (Array.isArray(nodeset) && nodeset.length === 0) return;
+
+      // const touched = FxBind.getReferencesForRef(ref,Array.from(nodeset));
+      // const touched = parseScript(ref,{},nodeset);
+      // console.log('touched by widget ref',touched);
 
       // ### clear items
       const { children } = widget;

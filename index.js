@@ -26,18 +26,19 @@ import './src/ui/fx-items.js';
 
 // action classes
 import './src/actions/fx-append.js';
+import './src/actions/fx-confirm.js';
 import './src/actions/fx-delete.js';
+import './src/actions/fx-dispatch.js';
+import './src/actions/fx-hide.js';
 import './src/actions/fx-insert.js';
 import './src/actions/fx-message.js';
-import './src/actions/fx-setvalue.js';
-import './src/actions/fx-send.js';
-import './src/actions/fx-toggle.js';
-import './src/actions/fx-dispatch.js';
-import './src/actions/fx-update.js';
 import './src/actions/fx-refresh.js';
-import './src/actions/fx-confirm.js';
+import './src/actions/fx-return.js';
+import './src/actions/fx-send.js';
+import './src/actions/fx-setvalue.js';
 import './src/actions/fx-show.js';
-import './src/actions/fx-hide.js';
+import './src/actions/fx-toggle.js';
+import './src/actions/fx-update.js';
 
 import './src/functions/fx-function.js';
 

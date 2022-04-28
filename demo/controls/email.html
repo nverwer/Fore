@@ -36,10 +36,13 @@
         </fx-model>
         <fx-control ref="instance('email')/email">
 <!--            <label>From</label>-->
+            <fx-return ref="." event="value-changed"></fx-return>
+            <fx-message event="value-changed">hey!!</fx-message>
         </fx-control>
         <fx-trigger>
-            <button>message me</button>
+            <button>message and refresh me</button>
             <fx-message>Hey my address is {email}</fx-message>
+            <fx-refresh></fx-refresh>
         </fx-trigger>
         <fx-inspector open></fx-inspector>
     </fx-fore>

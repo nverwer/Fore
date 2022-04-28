@@ -69,6 +69,9 @@ export default class AbstractControl extends foreElementMixin(HTMLElement) {
         * - add ourselves to boundControls of foreign modelItem -> this control will then get refreshed when the foreign modelItem is changed.
         */
 
+        // const touched = FxBind.getReferencesForRef(this.ref,Array.from(this.nodeset));
+        // console.log('touched',touched);
+
 
 
         /*
