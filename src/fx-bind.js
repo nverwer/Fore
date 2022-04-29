@@ -185,6 +185,17 @@ export class FxBind extends foreElementMixin(HTMLElement) {
         const path = XPathUtil.getPath(node);
         this.model.mainGraph.addNode(path, node);
 
+        /* ### catching references in the 'ref' itself...
+        todo: investigate cases where 'ref' attributes use predicates pointing to other nodes. These would not be handled
+        in current implementation.
+
+        General question: are there valid use-cases for using a 'filter' expression to narrow the nodeset
+          where to apply constraints? Guess yes and if it's 'just' for reducing the amount of necessary modelItem objects.
+
+
+        */
+        // const foreignRefs = this.getReferences(this.ref);
+
         if (this.calculate) {
           this.model.mainGraph.addNode(`${path}:calculate`, node);
           // Calculated values are a dependency of the model item.
@@ -516,29 +527,34 @@ export class FxBind extends foreElementMixin(HTMLElement) {
    */
   _getReferencesForProperty(propertyExpr) {
     if (propertyExpr) {
-      const touchedNodes = new Set();
-      const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
-      this.nodeset.forEach(node => {
-        evaluateXPathToString(propertyExpr, node, this, domFacade);
-      });
-
-      return Array.from(touchedNodes.values());
+      return this.getReferences(propertyExpr);
     }
     return [];
   }
 
-  static getReferencesForRef(ref,nodeset){
-    if (ref && nodeset) {
-      const touchedNodes = new Set();
-      const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
-      nodeset.forEach(node => {
-        evaluateXPathToString(propertyExpr, node, this, domFacade);
-      });
-
-      return Array.from(touchedNodes.values());
-    }
-    return [];
+  getReferences(propertyExpr) {
+    const touchedNodes = new Set();
+    const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
+    this.nodeset.forEach(node => {
+      evaluateXPathToString(propertyExpr, node, this, domFacade);
+    });
+    return Array.from(touchedNodes.values());
   }
+
+  /*
+    static getReferencesForRef(ref,nodeset){
+      if (ref && nodeset) {
+        const touchedNodes = new Set();
+        const domFacade = new DependencyNotifyingDomFacade(otherNode => touchedNodes.add(otherNode));
+        nodeset.forEach(node => {
+          evaluateXPathToString(ref, node, this, domFacade);
+        });
+
+        return Array.from(touchedNodes.values());
+      }
+      return [];
+    }
+  */
 
   _initBooleanModelItemProperty(property, node) {
     // evaluate expression to boolean
