@@ -1,5 +1,5 @@
 import XfAbstractControl from './abstract-control.js';
-import { evaluateXPath, evaluateXPathToString, evaluateXPathToNodes} from '../xpath-evaluation.js';
+import { evaluateXPath, evaluateXPathToString, evaluateXPathToNodes } from '../xpath-evaluation.js';
 import getInScopeContext from '../getInScopeContext.js';
 import { Fore } from '../fore.js';
 // import {FxBind} from "../fx-bind";
@@ -65,28 +65,31 @@ export default class FxControl extends XfAbstractControl {
       this.setValue(this.widget[this.valueProp]);
     });
 
-    this.addEventListener('return', (e) =>{
+    this.addEventListener('return', e => {
       console.log('catched return action on ', this);
       console.log('return detail', e.detail);
 
-      if(!Event.BUBBLING_PHASE) return ;
       console.log('return triggered on ', this);
       console.log('this.ref', this.ref);
       console.log('current outer instance', this.getInstance());
 
-      console.log('???? why ???? current nodeset should point to the node of the outer control', e.currentTarget.nodeset);
-      console.log('???? why ???? current nodeset should point to the node of the outer control', this.nodeset);
+      console.log(
+        '???? why ???? current nodeset should point to the node of the outer control',
+        e.currentTarget.nodeset,
+      );
+      console.log(
+        '???? why ???? current nodeset should point to the node of the outer control',
+        this.nodeset,
+      );
       const newNodes = e.detail.nodeset;
       console.log('new nodeset', newNodes);
       console.log('currentTarget', e.currentTarget);
       console.log('target', e.target);
 
-
       e.stopPropagation();
 
-      // this._replaceNode(newNodes);
+      this._replaceNode(newNodes);
     });
-
 
     /*
     const slot = this.shadowRoot.querySelector('slot');
@@ -120,8 +123,9 @@ export default class FxControl extends XfAbstractControl {
     setval.actionPerformed();
   }
 
-  _replaceNode(node){
-    this.modelItem.node.replaceWith(node);
+  _replaceNode(node) {
+    // Note: clone the node while replacing to prevent the instances to leak through
+    this.modelItem.node.replaceWith(node.cloneNode(true));
     this.getOwnerForm().refresh();
   }
 
@@ -269,8 +273,9 @@ export default class FxControl extends XfAbstractControl {
           const defaultInst = theFore.querySelector('fx-instance');
           console.log('defaultInst', defaultInst);
           const doc = new DOMParser().parseFromString('<data></data>', 'application/xml');
-          doc.firstElementChild.appendChild(this.initialNode);
-          // defaultInst.setInstanceData(this.initialNode);
+          // Note: Clone the input to prevent the inner fore from editing the outer node
+          doc.firstElementChild.appendChild(this.initialNode.cloneNode(true));
+          // defaultinst.setInstanceData(this.initialNode);
           defaultInst.setInstanceData(doc);
           console.log('new data', defaultInst.getInstanceData());
           // theFore.getModel().modelConstruct();
