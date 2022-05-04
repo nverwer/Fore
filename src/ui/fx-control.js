@@ -264,7 +264,13 @@ export default class FxControl extends XfAbstractControl {
       // console.log('thefore', theFore)
       theFore.classList.add('widget'); // is the new widget
       const dummy = this.querySelector('input');
-      dummy.replaceWith(theFore);
+      if(this.hasAttribute('shadow')){
+        dummy.parentNode.removeChild(dummy);
+        this.shadowRoot.appendChild(theFore);
+      }else{
+        dummy.replaceWith(theFore);
+      }
+
       console.log(`########## loaded fore as component ##### ${this.url}`);
       theFore.addEventListener(
         'model-construct-done',

@@ -22,6 +22,7 @@
         fx-control {
             display: grid;
             grid-template-columns: 1fr 2fr;
+            grid-gap:1rem;
         }
 
         input{
@@ -29,6 +30,7 @@
         }
 
         fx-group {
+            width:max-content;
         }
 
         fx-fore fx-fore {
@@ -36,9 +38,20 @@
             border: thin solid steelblue;
             height:200px;
         }
+
+        label{
+            justify-self:end;
+        }
+        fx-fore fx-fore label{
+            display: none;
+        }
         fx-inspector{
             position: absolute;
             height: 99%;
+        }
+        .wrapper{
+            padding: 2rem;
+            background: white;
         }
     </style>
 </head>
@@ -46,7 +59,13 @@
 <div class="wrapper">
 
     <h1>Email message using Fore as control</h1>
+    <p>The areas in blue are loaded from another nested `fx-fore` element that is used as a widget
+    in the outer Fore.</p>
 
+    <p class="note">
+        The first nested Fore is attached to the lightDOM and therefore is styled by outer CSS. The second
+        attached the nested Fore to the shadowDOM and is not reachable from the outside.
+    </p>
     <fx-fore>
         <fx-message event="ready">outer fore ready</fx-message>
 
@@ -81,7 +100,8 @@
             </fx-control>
             <fx-control ref="to/email"
                         url="email.html"
-                        initial=".">
+                        initial="."
+                        shadow>
                 <label>To</label>
             </fx-control>
             <!--
@@ -94,7 +114,7 @@
                         </fx-control>
             -->
         </fx-group>
-        <fx-inspector></fx-inspector>
+        <fx-inspector open></fx-inspector>
     </fx-fore>
 
 
