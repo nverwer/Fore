@@ -78,6 +78,10 @@
                     </from>
                     <to>
                         <email>Jane.Doe@nowhere.com</email>
+                        <email>Jane.Doe@nowhere.com</email>
+                        <email>Jane.Doe@nowhere.com</email>
+                        <email>Jane.Doe@nowhere.com</email>
+                        <email>Jane.Doe@nowhere.com</email>
                     </to>
                     <subject></subject>
                     <message></message>
@@ -98,12 +102,16 @@
                         initial=".">
                 <label>From</label>
             </fx-control>
-            <fx-control ref="to/email"
+			<fx-repeat ref="to/email">
+			  <template>
+            <fx-control ref="."
                         url="email.html"
                         initial="."
                         shadow>
                 <label>To</label>
             </fx-control>
+			</template>
+			</fx-repeat>
             <!--
                         <fx-control ref="subject">
                             <label>Subject</label>
