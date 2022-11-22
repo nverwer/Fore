@@ -6,6 +6,8 @@ import { evaluateXPath } from '../xpath-evaluation.js';
 import getInScopeContext from '../getInScopeContext.js';
 import { XPathUtil } from '../xpath-util.js';
 
+import xpathInvalidator from '../xpath-invalidator.js';
+
 /**
  * `fx-repeat`
  *
@@ -186,6 +188,7 @@ export class FxRepeat extends foreElementMixin(HTMLElement) {
    * @private
    */
   _evalNodeset() {
+	  xpathInvalidator.runInInvalidationContext(this, () => {
     // const inscope = this.getInScopeContext();
     const inscope = getInScopeContext(this.getAttributeNode('ref') || this, this.ref);
     // console.log('##### inscope ', inscope);
@@ -205,7 +208,8 @@ export class FxRepeat extends foreElementMixin(HTMLElement) {
       this.nodeset = rawNodeset[0];
       return;
     }
-    this.nodeset = rawNodeset;
+		  this.nodeset = rawNodeset;
+	  });
   }
 
   async refresh(force) {
